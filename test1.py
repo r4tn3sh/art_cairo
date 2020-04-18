@@ -30,17 +30,21 @@ a4 = random.uniform(min_x, max_x)
 bx = random.uniform(min_x, max_x)
 by = random.uniform(min_x, max_x)
 
-def draw_spiral(edge_x, edge_y, stidx, M, delta, deltainc, N):
-	if stidx>=M:
-		print("Starting index stidx should be less than no. of sides.")
-		return
-	ctx.move_to(edge_x[stidx], edge_y[stidx])
+def draw_spiral(edge_x, edge_y, rot, M, delta, deltainc, N):
+	ctx.move_to(edge_x[0], edge_y[0])
 	for loop in range(0,N):
-		idx = (loop)%M
-		nxt_x = edge_x[(idx+1)%M]*(1-delta) + edge_x[(idx+2)%M]*delta
-		nxt_y = edge_y[(idx+1)%M]*(1-delta) + edge_y[(idx+2)%M]*delta
-		edge_x[(idx+1)%M] = nxt_x
-		edge_y[(idx+1)%M] = nxt_y
+		if rot==0: #clockwise rotation
+			idx = (loop)%M
+			nxt_x = edge_x[(idx+1)%M]*(1-delta) + edge_x[(idx+2)%M]*delta
+			nxt_y = edge_y[(idx+1)%M]*(1-delta) + edge_y[(idx+2)%M]*delta
+			edge_x[(idx+1)%M] = nxt_x
+			edge_y[(idx+1)%M] = nxt_y
+		else: #anticlockwise rotation
+			idx = (M-(loop)%M)%M
+			nxt_x = edge_x[(idx+M-1)%M]*(1-delta) + edge_x[(idx+M-2)%M]*delta
+			nxt_y = edge_y[(idx+M-1)%M]*(1-delta) + edge_y[(idx+M-2)%M]*delta
+			edge_x[(idx+M-1)%M] = nxt_x
+			edge_y[(idx+M-1)%M] = nxt_y
 		ctx.line_to(nxt_x, nxt_y)
 		delta = min((1+deltainc)*delta, 0.5)
 
@@ -58,7 +62,7 @@ edge_y[2]=by
 edge_x[3]=0
 edge_y[3]=a2
 delta = delta_base
-draw_spiral(edge_x, edge_y, 0, 4, delta, 0.05, 100)
+draw_spiral(edge_x, edge_y, 1, 4, delta, 0.05, 100)
 
 ## quadrant 1
 ctx.move_to(0, a2)
@@ -72,7 +76,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=a3
 edge_y[3]=1
-draw_spiral(edge_x, edge_y, 1, 4, delta, 0.05, 100)
+draw_spiral(edge_x, edge_y, 0, 4, delta, 0.05, 100)
 
 ctx.move_to(a3, 1)
 ctx.line_to(bx, by)  # Line to (x,y)
@@ -85,7 +89,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=1
 edge_y[3]=a4
-draw_spiral(edge_x, edge_y, 2, 4, delta, 0.05, 100)
+draw_spiral(edge_x, edge_y, 1, 4, delta, 0.05, 100)
 
 ctx.move_to(1, a4)
 ctx.line_to(bx, by)  # Line to (x,y)
@@ -98,7 +102,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=a1
 edge_y[3]=0
-draw_spiral(edge_x, edge_y, 3, 4, delta, 0.05, 100)
+draw_spiral(edge_x, edge_y, 0, 4, delta, 0.05, 100)
 
 
 
