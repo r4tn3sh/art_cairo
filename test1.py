@@ -30,6 +30,20 @@ a4 = random.uniform(min_x, max_x)
 bx = random.uniform(min_x, max_x)
 by = random.uniform(min_x, max_x)
 
+def draw_spiral(edge_x, edge_y, stidx, M, delta, deltainc, N):
+	if stidx>=M:
+		print("Starting index stidx should be less than no. of sides.")
+		return
+	ctx.move_to(edge_x[stidx], edge_y[stidx])
+	for loop in range(0,N):
+		idx = (loop)%M
+		nxt_x = edge_x[(idx+1)%M]*(1-delta) + edge_x[(idx+2)%M]*delta
+		nxt_y = edge_y[(idx+1)%M]*(1-delta) + edge_y[(idx+2)%M]*delta
+		edge_x[(idx+1)%M] = nxt_x
+		edge_y[(idx+1)%M] = nxt_y
+		ctx.line_to(nxt_x, nxt_y)
+		delta = min((1+deltainc)*delta, 0.5)
+
 ## quadrant 0
 qd = 0
 ctx.move_to(a1, 0)
@@ -43,23 +57,8 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=0
 edge_y[3]=a2
-ctx.move_to(edge_x[0], edge_y[0])
 delta = delta_base
-for loop in range(0,100):
-	idx = (loop)%4
-	#print("------------------")
-	#print(edge_x[idx], " ", edge_y[idx])
-	#print(edge_x[(idx+1)%4], " ", edge_y[(idx+1)%4])
-	#print(edge_x[(idx+2)%4], " ", edge_y[(idx+2)%4])
-	nxt_x = edge_x[(idx+1)%4]*(1-delta) + edge_x[(idx+2)%4]*delta
-	nxt_y = edge_y[(idx+1)%4]*(1-delta) + edge_y[(idx+2)%4]*delta
-	#print(nxt_x, " ", nxt_y)
-	edge_x[(idx+1)%4] = nxt_x
-	edge_y[(idx+1)%4] = nxt_y
-	ctx.line_to(nxt_x, nxt_y)
-	delta = min(1.05*delta, 0.5)
-	#print (delta)
-	#ctx.close_path()
+draw_spiral(edge_x, edge_y, 0, 4, delta, 0.05, 100)
 
 ## quadrant 1
 ctx.move_to(0, a2)
@@ -73,16 +72,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=a3
 edge_y[3]=1
-ctx.move_to(edge_x[0], edge_y[0])
-delta = delta_base
-for loop in range(0,100):
-	idx = (loop)%4
-	nxt_x = edge_x[(idx+1)%4]*(1-delta) + edge_x[(idx+2)%4]*delta
-	nxt_y = edge_y[(idx+1)%4]*(1-delta) + edge_y[(idx+2)%4]*delta
-	edge_x[(idx+1)%4] = nxt_x
-	edge_y[(idx+1)%4] = nxt_y
-	ctx.line_to(nxt_x, nxt_y)
-	delta = min(1.05*delta, 0.5)
+draw_spiral(edge_x, edge_y, 1, 4, delta, 0.05, 100)
 
 ctx.move_to(a3, 1)
 ctx.line_to(bx, by)  # Line to (x,y)
@@ -95,16 +85,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=1
 edge_y[3]=a4
-ctx.move_to(edge_x[0], edge_y[0])
-delta = delta_base
-for loop in range(0,100):
-	idx = (loop)%4
-	nxt_x = edge_x[(idx+1)%4]*(1-delta) + edge_x[(idx+2)%4]*delta
-	nxt_y = edge_y[(idx+1)%4]*(1-delta) + edge_y[(idx+2)%4]*delta
-	edge_x[(idx+1)%4] = nxt_x
-	edge_y[(idx+1)%4] = nxt_y
-	ctx.line_to(nxt_x, nxt_y)
-	delta = min(1.05*delta, 0.5)
+draw_spiral(edge_x, edge_y, 2, 4, delta, 0.05, 100)
 
 ctx.move_to(1, a4)
 ctx.line_to(bx, by)  # Line to (x,y)
@@ -117,16 +98,7 @@ edge_x[2]=bx
 edge_y[2]=by
 edge_x[3]=a1
 edge_y[3]=0
-ctx.move_to(edge_x[0], edge_y[0])
-delta = delta_base
-for loop in range(0,100):
-	idx = (loop)%4
-	nxt_x = edge_x[(idx+1)%4]*(1-delta) + edge_x[(idx+2)%4]*delta
-	nxt_y = edge_y[(idx+1)%4]*(1-delta) + edge_y[(idx+2)%4]*delta
-	edge_x[(idx+1)%4] = nxt_x
-	edge_y[(idx+1)%4] = nxt_y
-	ctx.line_to(nxt_x, nxt_y)
-	delta = min(1.05*delta, 0.5)
+draw_spiral(edge_x, edge_y, 3, 4, delta, 0.05, 100)
 
 
 
