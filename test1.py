@@ -3,7 +3,7 @@ import math
 import cairo
 import random
 
-#random.seed(1)
+random.seed(2)
 noofcenters = 4
 #Canvas size
 WIDTH, HEIGHT = 1024, 1024
@@ -82,6 +82,7 @@ for loop in range(0,noofcenters):
     ctx.fill
 
 #print("---------------")
+# Save perpendicular bisectos
 idx = 0
 for loop1 in range(0,noofcenters):
     for loop2 in range(loop1+1, noofcenters):
@@ -90,12 +91,12 @@ for loop1 in range(0,noofcenters):
         b[loop2][loop1] = b[loop1][loop2]
         #print("@@@@",loop1," ",loop2," ",m[loop1][loop2]," ",b[loop1][loop2])
 
-        #continue
+        continue
 
         #following is only for visual debugging
         move_flag = 0
         for loop3 in range(0, 4):
-            tidx = 5
+            tidx = 3
             if not ((loop1==tidx and loop2!=tidx) or (loop2==tidx and loop1!=tidx)):
                 continue
             if loop3==0: #y=0
@@ -148,6 +149,8 @@ for loop1 in range(0,noofcenters):
             # intersection of loop2 and loop3 bisectors
             tempx = (b[loop1][loop2]-b[loop1][loop3])/(m[loop1][loop3]-m[loop1][loop2])
             tempy = m[loop1][loop2]*tempx+b[loop1][loop2]
+            if (tempx<0 or tempy<0 or tempx>1 or tempy>1):
+                continue
             cand_flag = 1
             len_a=veclen(tempx,tempy,base_x[loop1],base_y[loop1])
             # the line from center to this intersection point
@@ -166,9 +169,6 @@ for loop1 in range(0,noofcenters):
                 ax[loop1][idx] = tempx
                 ay[loop1][idx] = tempy
                 idx = idx+1
-                ctx.move_to(ax[loop1][idx], ay[loop1][idx])
-                ctx.arc(ax[loop1][idx],ay[loop1][idx],0.1, 0, 1.8*(math.pi))
-                ctx.fill
 
 #print("---------------")
 #finding edge nodes
@@ -228,9 +228,6 @@ for loop1 in range(0,noofcenters):
                 ay[loop1][idx] = tempy
                 idx = idx+1
     Nidx[loop1] = idx
-    if loop1==2:
-        print(ax[loop1])
-        print(ay[loop1])
 
 # print("---------------")
 # idx = 0
@@ -249,11 +246,17 @@ for loop1 in range(0,noofcenters):
 #         idx = idx+1
 
 # Sorting based on angle
-for loop1 in range(0,noofcenters):
+#for loop1 in range(0,noofcenters):
+for loop1 in range(0,1):
+    print(ax[loop1])
+    print(ay[loop1])
     for idx in range(0, Nidx[loop1]):
-        tempx = base_x[loop1] - ax[loop1][idx]
-        tempy = base_y[loop1] - ay[loop1][idx]
+        tempx = ax[loop1][idx]-base_x[loop1]
+        tempy = ay[loop1][idx]-base_y[loop1]
         angle_t[loop1][idx] = math.atan2(tempy, tempx)
+        ctx.move_to(ax[loop1][idx], ay[loop1][idx])
+        ctx.arc(ax[loop1][idx],ay[loop1][idx],0.01, 0, 2*(math.pi))
+        ctx.fill
     for loop2 in range(0, Nidx[loop1]-1):
         for loop3 in range(loop2+1, Nidx[loop1]):
             if angle_t[loop1][loop2]>angle_t[loop1][loop3]:
@@ -266,14 +269,18 @@ for loop1 in range(0,noofcenters):
     for idx in range(0, Nidx[loop1]-1):
         ctx.move_to(ax[loop1][idx], ay[loop1][idx])
         ctx.line_to(ax[loop1][idx+1], ay[loop1][idx+1])
+    ctx.move_to(ax[loop1][idx+1], ay[loop1][idx+1])
+    ctx.line_to(ax[loop1][0], ay[loop1][0])
+
 
 
 delta = delta_base
-for loop1 in range(2,3):
+#for loop1 in range(0,noofcenters):
+for loop1 in range(0,1):
     print(Nidx[loop1])
     print(ax[loop1])
     print(ay[loop1])
-    #draw_spiral(ax[loop1], ay[loop1], 0, Nidx[loop1], delta, 0.05, 100)
+    draw_spiral(ax[loop1], ay[loop1], 0, Nidx[loop1], delta, 0.05, 100)
 
 
 #ctx.set_source_rgb(0.3, 0.2, 0.5)  # Solid color
