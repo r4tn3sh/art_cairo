@@ -3,7 +3,8 @@ import math
 import cairo
 import random
 
-random.seed(1)
+#random.seed(1)
+noofcenters = 4
 #Canvas size
 WIDTH, HEIGHT = 1024, 1024
 
@@ -20,8 +21,8 @@ def nCr(n,r):
     return f(n) / f(r) / f(n-r)
 
 def draw_spiral(edge_x, edge_y, rot, M, delta, deltainc, N):
-    print(M)
-    print(edge_x[0], edge_y[0])
+    #print(M)
+    #print(edge_x[0], edge_y[0])
     ctx.move_to(edge_x[0], edge_y[0])
     for loop in range(0,N):
         if rot==0: #clockwise rotation
@@ -60,7 +61,6 @@ a2 = random.uniform(min_x, max_x)
 a3 = random.uniform(min_x, max_x)
 a4 = random.uniform(min_x, max_x)
 
-noofcenters = 4
 base_x = [0]*noofcenters
 base_y = [0]*noofcenters
 #m = [[0]*(noofcenters)]*noofcenters
@@ -69,6 +69,7 @@ m = [[0 for x in range(noofcenters)] for y in range(noofcenters)]
 b = [[0 for x in range(noofcenters)] for y in range(noofcenters)]
 ax = [[0 for x in range(noofcenters+5)] for y in range(noofcenters)]
 ay = [[0 for x in range(noofcenters+5)] for y in range(noofcenters)]
+angle_t = [[0 for x in range(noofcenters+5)] for y in range(noofcenters)]
 #ax = [0]*(noofcenters)
 #ay = [0]*(noofcenters)
 Nidx = [0]*noofcenters
@@ -88,7 +89,9 @@ for loop1 in range(0,noofcenters):
         m[loop2][loop1] = m[loop1][loop2]
         b[loop2][loop1] = b[loop1][loop2]
         #print("@@@@",loop1," ",loop2," ",m[loop1][loop2]," ",b[loop1][loop2])
-        continue
+
+        #continue
+
         #following is only for visual debugging
         move_flag = 0
         for loop3 in range(0, 4):
@@ -163,6 +166,9 @@ for loop1 in range(0,noofcenters):
                 ax[loop1][idx] = tempx
                 ay[loop1][idx] = tempy
                 idx = idx+1
+                ctx.move_to(ax[loop1][idx], ay[loop1][idx])
+                ctx.arc(ax[loop1][idx],ay[loop1][idx],0.1, 0, 1.8*(math.pi))
+                ctx.fill
 
 #print("---------------")
 #finding edge nodes
@@ -222,6 +228,9 @@ for loop1 in range(0,noofcenters):
                 ay[loop1][idx] = tempy
                 idx = idx+1
     Nidx[loop1] = idx
+    if loop1==2:
+        print(ax[loop1])
+        print(ay[loop1])
 
 # print("---------------")
 # idx = 0
@@ -239,12 +248,32 @@ for loop1 in range(0,noofcenters):
 #         ctx.fill
 #         idx = idx+1
 
-delta = delta_base
+# Sorting based on angle
 for loop1 in range(0,noofcenters):
+    for idx in range(0, Nidx[loop1]):
+        tempx = base_x[loop1] - ax[loop1][idx]
+        tempy = base_y[loop1] - ay[loop1][idx]
+        angle_t[loop1][idx] = math.atan2(tempy, tempx)
+    for loop2 in range(0, Nidx[loop1]-1):
+        for loop3 in range(loop2+1, Nidx[loop1]):
+            if angle_t[loop1][loop2]>angle_t[loop1][loop3]:
+                tempx = ax[loop1][loop2]
+                tempy = ay[loop1][loop2]
+                ax[loop1][loop2] = ax[loop1][loop3]
+                ay[loop1][loop2] = ay[loop1][loop3]
+                ax[loop1][loop3] = tempx
+                ay[loop1][loop3] = tempy
+    for idx in range(0, Nidx[loop1]-1):
+        ctx.move_to(ax[loop1][idx], ay[loop1][idx])
+        ctx.line_to(ax[loop1][idx+1], ay[loop1][idx+1])
+
+
+delta = delta_base
+for loop1 in range(2,3):
     print(Nidx[loop1])
     print(ax[loop1])
     print(ay[loop1])
-    draw_spiral(ax[loop1], ay[loop1], 0, Nidx[loop1], delta, 0.05, 100)
+    #draw_spiral(ax[loop1], ay[loop1], 0, Nidx[loop1], delta, 0.05, 100)
 
 
 #ctx.set_source_rgb(0.3, 0.2, 0.5)  # Solid color
