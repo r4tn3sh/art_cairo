@@ -177,6 +177,7 @@ for loop1 in range(0,noofcenters):
     idx = 0
     while((ax[loop1][idx]>0 or ay[loop1][idx]>0) and idx<noofcenters+5): #TODO: maxidx
         idx = idx+1
+    corner_flag = [0]*4
     for loop2 in range(0, noofcenters):
         if (loop2==loop1):
             continue
@@ -194,21 +195,37 @@ for loop1 in range(0,noofcenters):
                 tempx = (1-b[loop1][loop2])/m[loop1][loop2]
                 tempy = 1
             elif loop3==4: #x=0,y=0
-                tempx = 0
-                tempy = 0
+                if corner_flag[3] == 0:
+                    tempx = 0
+                    tempy = 0
+                    corner_flag[0] = 1
+                else:
+                    continue
             elif loop3==5: #x=1,y=0
-                tempx = 1
-                tempy = 0
+                if corner_flag[3] == 0:
+                    tempx = 1
+                    tempy = 0
+                    corner_flag[1] = 1
+                else:
+                    continue
             elif loop3==6: #x=0,y=1
-                tempx = 0
-                tempy = 1
+                if corner_flag[3] == 0:
+                    tempx = 0
+                    tempy = 1
+                    corner_flag[2] = 1
+                else:
+                    continue
             elif loop3==7: #x=1,y=1
-                tempx = 1
-                tempy = 1
+                if corner_flag[3] == 0:
+                    tempx = 1
+                    tempy = 1
+                    corner_flag[3] = 1
+                else:
+                    continue
             if (tempx<0 or tempy<0 or tempx>1 or tempy>1):
                 continue
-            if (loop2>0 and loop3>3):
-                continue
+            #if (loop2>0 and loop3>3):
+            #    continue
             cand_flag = 1
             len_a=veclen(tempx,tempy,base_x[loop1],base_y[loop1])
             # the line from center to this intersection point
@@ -246,8 +263,8 @@ for loop1 in range(0,noofcenters):
 #         idx = idx+1
 
 # Sorting based on angle
-#for loop1 in range(0,noofcenters):
-for loop1 in range(0,1):
+for loop1 in range(0,noofcenters):
+#for loop1 in range(3,4):
     print(ax[loop1])
     print(ay[loop1])
     for idx in range(0, Nidx[loop1]):
@@ -262,10 +279,13 @@ for loop1 in range(0,1):
             if angle_t[loop1][loop2]>angle_t[loop1][loop3]:
                 tempx = ax[loop1][loop2]
                 tempy = ay[loop1][loop2]
+                tempang = angle_t[loop1][loop2]
                 ax[loop1][loop2] = ax[loop1][loop3]
                 ay[loop1][loop2] = ay[loop1][loop3]
+                angle_t[loop1][loop2] = angle_t[loop1][loop3]
                 ax[loop1][loop3] = tempx
                 ay[loop1][loop3] = tempy
+                angle_t[loop1][loop3] = tempang
     for idx in range(0, Nidx[loop1]-1):
         ctx.move_to(ax[loop1][idx], ay[loop1][idx])
         ctx.line_to(ax[loop1][idx+1], ay[loop1][idx+1])
@@ -275,8 +295,8 @@ for loop1 in range(0,1):
 
 
 delta = delta_base
-#for loop1 in range(0,noofcenters):
-for loop1 in range(0,1):
+for loop1 in range(0,noofcenters):
+#for loop1 in range(3,4):
     print(Nidx[loop1])
     print(ax[loop1])
     print(ay[loop1])
